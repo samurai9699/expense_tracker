@@ -27,7 +27,7 @@ const TransactionPage = () => {
 	return (
 		<div className='h-screen max-w-4xl mx-auto flex flex-col items-center'>
 			<p className='md:text-4xl text-2xl lg:text-4xl font-bold text-center relative z-50 mb-4 mr-4 bg-gradient-to-r from-teal-600 via-green-500 to-teal-400 inline-block text-transparent bg-clip-text'>
-				Streamline this transaction
+				Track this transaction
 			</p>
 			<form className='w-full max-w-lg flex flex-col gap-5 px-3 ' onSubmit={handleSubmit}>
 				{/* TRANSACTION */}
@@ -177,7 +177,7 @@ const TransactionPage = () => {
                     from-green-500 to-green-300 hover:from-green-600 hover:to-green-400'
 					type='submit'
 				>
-					Streamline Transaction
+					Track Transaction
 				</button>
 			</form>
 		</div>
