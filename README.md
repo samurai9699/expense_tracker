@@ -1,6 +1,4 @@
-![Demo Site](https://freeimage.host/i/JVv98EF)
-
-
+![alt text](<Screenshot 2024-03-08 at 12.51.24 PM.png>)
 This is a MERN GraphQL Expense Tracker Application. This project is intended to assist in the efficient management of expenses through the utilization of a modern technology stack and GraphQL.
 
 ## Features:

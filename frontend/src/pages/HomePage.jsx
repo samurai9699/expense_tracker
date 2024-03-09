@@ -1,35 +1,108 @@
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-
 import Cards from "../components/Cards";
 import TransactionForm from "../components/TransactionForm";
-
 import { MdLogout } from "react-icons/md";
+import { GET_TRANSACTION_STATISTICS } from "../graphql/queries/transaction.query";
+import { toast } from "react-hot-toast";
+import { useMutation, useQuery } from "@apollo/client";
+import { LOGOUT } from "../graphql/mutations/user.mutation";
+import { useEffect, useState } from "react";
+import { GET_AUTHENTICATED_USER } from "../graphql/queries/user.query";
+
+
+// const HomePage = () => {
+// 	const chartData = {
+// 		labels: ["Saving", "Expense", "Investment"],
+// 		datasets: [
+// 			{
+// 				label: "%",
+// 				data: [18, 14, 10],
+// 				backgroundColor: ["rgba(251, 191, 36)", "rgba(104, 66, 246)", "rgba(38, 166, 154)"],
+// 				borderColor: ["rgba(251, 191, 36)", "rgba(104, 66, 246)", "rgba(38, 166, 154)"],
+// 				borderWidth: 6,
+// 				borderRadius: 30,
+// 				spacing: 15,
+// 				cutout: 135,
+// 			},
+// 		],
+// 	};
+
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const HomePage = () => {
-	const chartData = {
+
+	const {data} = useQuery(GET_TRANSACTION_STATISTICS);
+	const {data: authUserData} = useQuery(GET_AUTHENTICATED_USER);
+
+	const [logout, {loading, client}] = useMutation(LOGOUT, {
+		refetchQueries: ["GetAuthenticatedUser"],
+	});
+
+	const [chartData, setChartData] = useState({
 		labels: ["Saving", "Expense", "Investment"],
 		datasets: [
 			{
-				label: "%",
-				data: [18, 14, 10],
-				backgroundColor: ["rgba(251, 191, 36)", "rgba(104, 66, 246)", "rgba(38, 166, 154)"],
-				borderColor: ["rgba(251, 191, 36)", "rgba(104, 66, 246)", "rgba(38, 166, 154)"],
+				label: "$",
+				data: [],
+				backgroundColor: [],
+				borderColor: [],
 				borderWidth: 6,
 				borderRadius: 30,
 				spacing: 15,
 				cutout: 135,
 			},
 		],
+	});
+
+    
+	useEffect(() => {
+		if (data?.categoryStatistics) {
+			const categories = data.categoryStatistics.map((stat) => stat.category);
+			const totalAmounts = data.categoryStatistics.map((stat) => stat.totalAmount);
+
+			const backgroundColors = [];
+			const borderColors = [];
+
+			categories.forEach((category) => {
+				if (category === "saving") {
+					backgroundColors.push("rgba(251, 191, 36)");
+					borderColors.push("rgba(251, 191, 36)");
+				} else if (category === "expense") {
+					backgroundColors.push("rgba(104, 66, 246)");
+					borderColors.push("rgba(104, 66, 246)");
+				} else if (category === "investment") {
+					backgroundColors.push("rgba(38, 166, 154)");
+					borderColors.push("rgba(38, 166, 154)");
+				}
+			});
+
+			setChartData((prev) => ({
+				labels: categories,
+				datasets: [
+					{
+						...prev.datasets[0],
+						data: totalAmounts,
+						backgroundColor: backgroundColors,
+						borderColor: borderColors,
+					},
+				],
+			}));
+		}
+	}, [data]);
+
+	const handleLogout = async () => {
+		try{
+           await logout()
+		client.resetStore()
+		}
+		catch(error){
+			console.error("Error logging out:", error);
+			toast.error(error.message)
+		}
 	};
 
-	const handleLogout = () => {
-		console.log("Logging out...");
-	};
-
-	const loading = false;
 
 	return (
 		<>
@@ -39,7 +112,7 @@ const HomePage = () => {
 					Smart Spending, Smart Savings
 					</p>
 					<img
-						src={"https://tecdn.b-cdn.net/img/new/avatars/2.webp"}
+						src={authUserData?.authUser.profilePicture}
 						className='w-11 h-11 rounded-full border cursor-pointer'
 						alt='Avatar'
 					/>

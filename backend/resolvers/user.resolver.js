@@ -43,6 +43,7 @@ const userResolver = {
         login: async(_, {input}, context) => {
             try{
                 const {username, password} = input;
+                if(!username || !password) throw new Error("All fields are required");
                 const {user} = await context.authenticate("graphql-local", {username, password});
 
                 await context.login(user);
@@ -92,17 +93,17 @@ const userResolver = {
 		},
     },
 
-    // User: {
-	// 	transactions: async (parent) => {
-	// 		try {
-	// 			const transactions = await Transaction.find({ userId: parent._id });
-	// 			return transactions;
-	// 		} catch (err) {
-	// 			console.log("Error in user.transactions resolver: ", err);
-	// 			throw new Error(err.message || "Internal server error");
-	// 		}
-	// 	},
-	// },
+    User: {
+		transactions: async (parent) => {
+			try {
+				const transactions = await Transaction.find({ userId: parent._id });
+				return transactions;
+			} catch (err) {
+				console.log("Error in user.transactions resolver: ", err);
+				throw new Error(err.message || "Internal server error");
+			}
+		},
+	},
 }
 
 export default userResolver
