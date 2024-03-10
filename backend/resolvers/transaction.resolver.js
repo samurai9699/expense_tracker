@@ -52,7 +52,6 @@ const transactionResolver = {
 			// return [ { category: "expense", totalAmount: 125 }, { category: "investment", totalAmount: 100 }, { category: "saving", totalAmount: 50 } ]
 		},
 	},
-    
 	Mutation: {
 		createTransaction: async (_, { input }, context) => {
 			try {
@@ -88,7 +87,6 @@ const transactionResolver = {
 			}
 		},
 	},
-
 	Transaction: {
 		user: async (parent) => {
 			const userId = parent.userId;
