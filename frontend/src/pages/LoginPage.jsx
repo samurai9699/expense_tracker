@@ -3,7 +3,7 @@ import { useState } from "react";
 import InputField from "../components/InputField";
 import { useMutation } from "@apollo/client";
 import { LOGIN } from "../graphql/mutations/user.mutation";
-import { toast } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 const LoginPage = () => {
 	const [loginData, setLoginData] = useState({
@@ -13,7 +13,7 @@ const LoginPage = () => {
 
 	const [login, { loading }] = useMutation(LOGIN, {
 		refetchQueries: ["GetAuthenticatedUser"],
-	})
+	});
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -25,12 +25,11 @@ const LoginPage = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		if(!loginData.username || !loginData.password) return toast.error("Please fill in all fields")
-		try{
-            await login({variables: {input: loginData}})
-		}
-		catch (error){
-			console.error("Error loggin in:", error);
+		if (!loginData.username || !loginData.password) return toast.error("Please fill in all fields");
+		try {
+			await login({ variables: { input: loginData } });
+		} catch (error) {
+			console.error("Error logging in:", error);
 			toast.error(error.message);
 		}
 	};
@@ -42,7 +41,7 @@ const LoginPage = () => {
 					<div className='max-w-md w-full p-6'>
 						<h1 className='text-3xl font-semibold mb-6 text-black text-center'>Login</h1>
 						<h1 className='text-sm font-semibold mb-6 text-gray-500 text-center'>
-                        Welcome back! Kindly login to access your account
+							Welcome back! Log in to your account
 						</h1>
 						<form className='space-y-4' onSubmit={handleSubmit}>
 							<InputField
@@ -64,12 +63,11 @@ const LoginPage = () => {
 							<div>
 								<button
 									type='submit'
-									className='w-full bg-black text-white p-2 rounded-md hover:bg-gray-800 focus:outline-none focus:bg-black  focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-300
-										disabled:opacity-50 disabled:cursor-not-allowed
+									className='w-full bg-black text-white p-2 rounded-md hover:bg-gray-800 focus:outline-none focus:bg-black  focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed
 									'
 									disabled={loading}
 								>
-									{loading ? "Loading..." : "Login" }
+									{loading ? "Loading..." : "Login"}
 								</button>
 							</div>
 						</form>
